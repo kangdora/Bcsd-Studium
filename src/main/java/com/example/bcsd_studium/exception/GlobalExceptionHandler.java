@@ -26,6 +26,13 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(ex.getMessage()));
     }
 
+    @ExceptionHandler(DuplicateLoginIdException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateLoginId(DuplicateLoginIdException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
