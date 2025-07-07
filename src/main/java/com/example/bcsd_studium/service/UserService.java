@@ -4,6 +4,8 @@ import com.example.bcsd_studium.domain.entity.User;
 import com.example.bcsd_studium.domain.repository.UserRepository;
 import com.example.bcsd_studium.dto.UserRankDto;
 import com.example.bcsd_studium.dto.UserResponseDto;
+import com.example.bcsd_studium.exception.DuplicateLoginIdException;
+import com.example.bcsd_studium.exception.ErrorCode;
 import com.example.bcsd_studium.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,5 +28,20 @@ public class UserService {
         return userRepository.findAllByOrderByStreakCountDescCreatedAtAsc().stream()
                 .map(UserRankDto::from)
                 .toList();
+    }
+
+    public void signUp(String loginId, String email, String password, String nickname) {
+        if (userRepository.findByLoginId(loginId).isPresent()) {
+            throw new DuplicateLoginIdException(ErrorCode.DUPLICATE_LOGIN_ID);
+        }
+
+        User user = User.builder()
+                .loginId(loginId)
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .streakCount(0)
+                .build();
+        userRepository.save(user);
     }
 }
