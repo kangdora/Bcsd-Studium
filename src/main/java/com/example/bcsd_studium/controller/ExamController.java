@@ -1,10 +1,8 @@
 package com.example.bcsd_studium.controller;
 
-import com.example.bcsd_studium.dto.AnswerSaveRequest;
-import com.example.bcsd_studium.dto.ExamDetailDto;
-import com.example.bcsd_studium.dto.ExamSubmitRequest;
-import com.example.bcsd_studium.dto.ExamSummaryDto;
+import com.example.bcsd_studium.dto.*;
 import com.example.bcsd_studium.exception.AnswerProcessingException;
+import com.example.bcsd_studium.service.CommentService;
 import com.example.bcsd_studium.service.ExamService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +19,7 @@ import java.util.Map;
 public class ExamController {
 
     private final ExamService examService;
+    private final CommentService commentService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping
@@ -50,5 +49,10 @@ public class ExamController {
                                                           @RequestBody ExamSubmitRequest request) {
         examService.submitExam(examId, request.submittedAt());
         return ResponseEntity.ok(Map.of("message", "제출 완료되었습니다."));
+    }
+
+    @GetMapping("/{examId}/comments")
+    public ResponseEntity<List<CommentDto>> getExamComments(@PathVariable Long examId) {
+        return ResponseEntity.ok(commentService.getComments(examId));
     }
 }
