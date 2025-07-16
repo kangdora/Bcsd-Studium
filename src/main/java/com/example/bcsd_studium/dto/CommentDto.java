@@ -9,15 +9,20 @@ public record CommentDto(
         Long userId,
         String nickname,
         String content,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        boolean editable
 ) {
     public static CommentDto from(Comment comment) {
+        return from(comment, false);
+    }
+    public static CommentDto from(Comment comment, boolean editable) {
         return new CommentDto(
                 comment.getId(),
                 comment.getUser().getId(),
                 comment.getUser().getNickname(),
                 comment.getContent(),
-                comment.getCreatedAt()
+                comment.getCreatedAt(),
+                editable
         );
     }
 }

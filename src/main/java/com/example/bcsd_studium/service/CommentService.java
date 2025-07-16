@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,12 +28,24 @@ public class CommentService {
     private final UserRepository userRepository;
 
     public List<CommentDto> getComments(Long examId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication != null ? authentication.getName() : null;
+
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
-        return commentRepository.findByExamIdOrderByIdAsc(exam.getId()).stream()
-                .map(CommentDto::from)
-                .toList();
+
+        List<Comment> comments = commentRepository.findByExamIdOrderByIdAsc(exam.getId());
+
+        List<CommentDto> commentDtos = new ArrayList<>();
+        for (Comment comment : comments) {
+            boolean editable = loginId != null && loginId.equals(comment.getUser().getLoginId());
+            CommentDto dto = CommentDto.from(comment, editable);
+            commentDtos.add(dto);
+        }
+
+        return commentDtos;
     }
+
 
     public void addComment(Long examId, String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -67,5 +80,28 @@ public class CommentService {
 
         comment.setContent(content);
         commentRepository.save(comment);
+    }
+
+
+    public void deleteComment(Long examId, Long commentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다."));
+
+        if (!comment.getExam().getId().equals(examId)) {
+            throw new IllegalArgumentException("해당 시험의 댓글이 아닙니다.");
+        }
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+
+        boolean isAuthor = comment.getUser().getId().equals(user.getId());
+        if (!isAuthor && !user.isAdmin()) {
+            throw new IllegalArgumentException("댓글을 삭제할 권한이 없습니다.");
+        }
+
+        commentRepository.delete(comment);
     }
 }

@@ -70,4 +70,11 @@ public class ExamController {
         commentService.updateComment(examId, commentId, request.content());
         return ResponseEntity.ok(MessageResponse.of("댓글이 수정되었습니다."));
     }
+
+    @DeleteMapping("/{examId}/comments/{commentId}")
+    public ResponseEntity<MessageResponse> deleteComment(@PathVariable Long examId,
+                                                         @PathVariable Long commentId) {
+        commentService.deleteComment(examId, commentId);
+        return ResponseEntity.ok(MessageResponse.of("댓글이 삭제되었습니다."));
+    }
 }
