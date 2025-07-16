@@ -39,4 +39,10 @@ public class AdminExamController {
         );
         return ResponseEntity.ok(MessageResponse.of("시험 정보가 수정되었습니다."));
     }
+
+    @DeleteMapping("/{examId}")
+    public ResponseEntity<MessageResponse> deleteExam(@PathVariable Long examId) {
+        examService.deleteExam(examId);
+        return ResponseEntity.ok(MessageResponse.of("시험이 삭제되었습니다."));
+    }
 }

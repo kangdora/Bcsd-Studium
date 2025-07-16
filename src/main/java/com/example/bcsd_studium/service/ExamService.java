@@ -4,6 +4,7 @@ import com.example.bcsd_studium.domain.entity.Answer;
 import com.example.bcsd_studium.domain.entity.Exam;
 import com.example.bcsd_studium.domain.entity.User;
 import com.example.bcsd_studium.domain.repository.AnswerRepository;
+import com.example.bcsd_studium.domain.repository.CommentRepository;
 import com.example.bcsd_studium.domain.repository.ExamRepository;
 import com.example.bcsd_studium.domain.repository.UserRepository;
 import com.example.bcsd_studium.dto.ExamDetailDto;
@@ -25,6 +26,7 @@ public class ExamService {
     private final ExamRepository examRepository;
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     public List<ExamSummaryDto> getAllExams() {
         return examRepository.findAllByOrderByIdDesc().stream()
@@ -84,5 +86,15 @@ public class ExamService {
         exam.setEndTime(endTime);
 
         examRepository.save(exam);
+    }
+
+    public void deleteExam(Long examId) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
+
+        commentRepository.deleteAllByExamId(examId);
+        answerRepository.deleteAllByExamId(examId);
+
+        examRepository.delete(exam);
     }
 }
