@@ -1,7 +1,9 @@
 package com.example.bcsd_studium.controller;
 
+import com.example.bcsd_studium.config.JwtTokenProvider;
 import com.example.bcsd_studium.dto.LoginRequest;
 import com.example.bcsd_studium.dto.SignupRequest;
+import com.example.bcsd_studium.service.AuthService;
 import com.example.bcsd_studium.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signup(@RequestBody SignupRequest request) {
@@ -24,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
-        String token = userService.login(request.email(), request.password());
+        String token = authService.login(request.email(), request.password());
         return ResponseEntity.ok(Map.of("accessToken", token));
     }
 }
