@@ -73,4 +73,16 @@ public class ExamService {
         examRepository.save(exam);
         return exam.getId();
     }
+
+    public void updateExam(Long examId, String title, String description, LocalDateTime startTime, LocalDateTime endTime) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
+
+        exam.setTitle(title);
+        exam.setDescription(description);
+        exam.setStartTime(startTime);
+        exam.setEndTime(endTime);
+
+        examRepository.save(exam);
+    }
 }

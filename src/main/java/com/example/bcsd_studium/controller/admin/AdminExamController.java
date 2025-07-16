@@ -24,4 +24,17 @@ public class AdminExamController {
         );
         return ResponseEntity.ok(ExamCreateResponse.of(id, "시험이 생성되었습니다."));
     }
+
+    @PutMapping("/{examId}")
+    public ResponseEntity<MessageResponse> updateExam(@PathVariable Long examId,
+                                                      @RequestBody ExamUpdateRequest request) {
+        examService.updateExam(
+                examId,
+                request.title(),
+                request.description(),
+                request.startTime(),
+                request.endTime()
+        );
+        return ResponseEntity.ok(MessageResponse.of("시험 정보가 수정되었습니다."));
+    }
 }
