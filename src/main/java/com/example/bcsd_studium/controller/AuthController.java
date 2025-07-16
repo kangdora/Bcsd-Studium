@@ -1,6 +1,5 @@
 package com.example.bcsd_studium.controller;
 
-import com.example.bcsd_studium.config.JwtTokenProvider;
 import com.example.bcsd_studium.dto.LoginRequest;
 import com.example.bcsd_studium.dto.SignupRequest;
 import com.example.bcsd_studium.service.AuthService;

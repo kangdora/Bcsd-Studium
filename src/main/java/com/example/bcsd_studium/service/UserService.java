@@ -1,6 +1,5 @@
 package com.example.bcsd_studium.service;
 
-import com.example.bcsd_studium.config.JwtTokenProvider;
 import com.example.bcsd_studium.domain.entity.User;
 import com.example.bcsd_studium.domain.repository.UserRepository;
 import com.example.bcsd_studium.dto.UserRankDto;
@@ -23,7 +22,6 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public UserResponseDto getUserByLoginId(String loginId) {
         User user = userRepository.findByLoginId(loginId)
