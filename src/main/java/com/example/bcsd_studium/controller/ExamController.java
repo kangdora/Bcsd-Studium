@@ -33,7 +33,7 @@ public class ExamController {
     }
 
     @PostMapping("/{examId}/answers")
-    public ResponseEntity<Map<String, String>> saveAnswers(@PathVariable Long examId,
+    public ResponseEntity<MessageResponse> saveAnswers(@PathVariable Long examId,
                                                            @RequestBody AnswerSaveRequest request) {
         try {
             String json = objectMapper.writeValueAsString(request.answerMap());
@@ -41,18 +41,25 @@ public class ExamController {
         } catch (JsonProcessingException e) {
             throw new AnswerProcessingException("답안을 처리하는 데 실패했습니다.");
         }
-        return ResponseEntity.ok(Map.of("message", "답안이 저장되었습니다."));
+        return ResponseEntity.ok(MessageResponse.of("답안이 저장되었습니다."));
     }
 
     @PostMapping("/{examId}/submit")
-    public ResponseEntity<Map<String, String>> submitExam(@PathVariable Long examId,
+    public ResponseEntity<MessageResponse> submitExam(@PathVariable Long examId,
                                                           @RequestBody ExamSubmitRequest request) {
         examService.submitExam(examId, request.submittedAt());
-        return ResponseEntity.ok(Map.of("message", "제출 완료되었습니다."));
+        return ResponseEntity.ok(MessageResponse.of("제출 완료되었습니다."));
     }
 
     @GetMapping("/{examId}/comments")
     public ResponseEntity<List<CommentDto>> getExamComments(@PathVariable Long examId) {
         return ResponseEntity.ok(commentService.getComments(examId));
+    }
+
+    @PostMapping("/{examId}/comments")
+    public ResponseEntity<MessageResponse> addComment(@PathVariable Long examId,
+                                                          @RequestBody CommentRequest request) {
+        commentService.addComment(examId, request.content());
+        return ResponseEntity.ok(MessageResponse.of("댓글이 등록되었습니다."));
     }
 }
