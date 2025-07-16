@@ -39,21 +39,22 @@ public class ExamService {
     }
 
     public void saveAnswers(Long examId, String answerMapJson) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
-        Answer answer = answerRepository.findTopByExamIdOrderByIdDesc(examId)
-                .orElse(Answer.builder().exam(exam).build());
+        Answer answer = getOrCreateAnswer(examId);
         answer.setAnswerMap(answerMapJson);
         answerRepository.save(answer);
     }
 
     public void submitExam(Long examId, LocalDateTime submittedAt) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
-        Answer answer = answerRepository.findTopByExamIdOrderByIdDesc(examId)
-                .orElse(Answer.builder().exam(exam).build());
+        Answer answer = getOrCreateAnswer(examId);
         answer.setSubmittedAt(submittedAt);
         answerRepository.save(answer);
+    }
+
+    private Answer getOrCreateAnswer(Long examId) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
+        return answerRepository.findTopByExamIdOrderByIdDesc(examId)
+                .orElse(Answer.builder().exam(exam).build());
     }
 
     public Long createExam(String title, String description, LocalDateTime startTime, LocalDateTime endTime) {
