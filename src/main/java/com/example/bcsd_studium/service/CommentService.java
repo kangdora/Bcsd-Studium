@@ -7,6 +7,8 @@ import com.example.bcsd_studium.domain.repository.CommentRepository;
 import com.example.bcsd_studium.domain.repository.ExamRepository;
 import com.example.bcsd_studium.domain.repository.UserRepository;
 import com.example.bcsd_studium.dto.CommentDto;
+import com.example.bcsd_studium.exception.CommentAccessDeniedException;
+import com.example.bcsd_studium.exception.CommentNotFoundException;
 import com.example.bcsd_studium.exception.ExamNotFoundException;
 import com.example.bcsd_studium.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,25 @@ public class CommentService {
                 .user(user)
                 .content(content)
                 .build();
+        commentRepository.save(comment);
+    }
+
+    public void updateComment(Long examId, Long commentId, String content) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다."));
+
+        if (!comment.getExam().getId().equals(examId)) {
+            throw new CommentNotFoundException("해당 댓글을 찾을 수 없습니다.");
+        }
+
+        if (!comment.getUser().getLoginId().equals(loginId)) {
+            throw new CommentAccessDeniedException("댓글 수정 권한이 없습니다.");
+        }
+
+        comment.setContent(content);
         commentRepository.save(comment);
     }
 }

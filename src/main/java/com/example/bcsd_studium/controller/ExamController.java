@@ -62,4 +62,12 @@ public class ExamController {
         commentService.addComment(examId, request.content());
         return ResponseEntity.ok(MessageResponse.of("댓글이 등록되었습니다."));
     }
+
+    @PutMapping("/{examId}/comments/{commentId}")
+    public ResponseEntity<MessageResponse> updateComment(@PathVariable Long examId,
+                                                         @PathVariable Long commentId,
+                                                         @RequestBody CommentRequest request) {
+        commentService.updateComment(examId, commentId, request.content());
+        return ResponseEntity.ok(MessageResponse.of("댓글이 수정되었습니다."));
+    }
 }
