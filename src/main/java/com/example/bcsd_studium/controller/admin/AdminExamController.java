@@ -2,6 +2,8 @@ package com.example.bcsd_studium.controller.admin;
 
 import com.example.bcsd_studium.dto.ExamCreateRequest;
 import com.example.bcsd_studium.dto.ExamCreateResponse;
+import com.example.bcsd_studium.dto.ExamUpdateRequest;
+import com.example.bcsd_studium.dto.MessageResponse;
 import com.example.bcsd_studium.service.ExamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
