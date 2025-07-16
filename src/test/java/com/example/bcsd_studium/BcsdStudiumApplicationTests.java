@@ -1,5 +1,6 @@
 package com.example.bcsd_studium;
 
+import com.example.bcsd_studium.domain.repository.CommentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -22,6 +23,9 @@ class BcsdStudiumApplicationTests {
 
 	@MockitoBean
 	private AnswerRepository answerRepository;
+
+	@MockitoBean
+	private CommentRepository commentRepository;
 
 	@Test
 	void contextLoads() {
