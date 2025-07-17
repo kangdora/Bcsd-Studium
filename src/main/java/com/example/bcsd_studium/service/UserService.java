@@ -4,6 +4,7 @@ import com.example.bcsd_studium.domain.entity.User;
 import com.example.bcsd_studium.domain.repository.UserRepository;
 import com.example.bcsd_studium.dto.UserRankDto;
 import com.example.bcsd_studium.dto.UserResponseDto;
+import com.example.bcsd_studium.exception.DuplicateEmailException;
 import com.example.bcsd_studium.exception.DuplicateLoginIdException;
 import com.example.bcsd_studium.exception.ErrorCode;
 import com.example.bcsd_studium.exception.UserNotFoundException;
@@ -38,6 +39,10 @@ public class UserService implements UserDetailsService {
     public void signUp(String loginId, String email, String password, String nickname) {
         if (userRepository.findByLoginId(loginId).isPresent()) {
             throw new DuplicateLoginIdException(ErrorCode.DUPLICATE_LOGIN_ID);
+        }
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         User user = User.builder()

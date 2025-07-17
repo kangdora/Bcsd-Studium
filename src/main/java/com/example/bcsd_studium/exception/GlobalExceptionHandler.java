@@ -45,6 +45,13 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(errorCode));
     }
 
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicateEmailException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode));
+    }
+
     @ExceptionHandler(QuestionNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleQuestionNotFound(QuestionNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
