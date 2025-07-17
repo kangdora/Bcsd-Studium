@@ -32,4 +32,3 @@ public class Question {
     @JoinColumn(name = "exam_id")
     private Exam exam;
 }
-

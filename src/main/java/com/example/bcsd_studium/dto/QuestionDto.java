@@ -18,7 +18,7 @@ public record QuestionDto(
         if (question.getChoices() != null) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
-                choiceList = mapper.readValue(question.getChoices(), new TypeReference<List<String>>() {});
+                choiceList = mapper.readValue(question.getChoices(), new TypeReference<>() {});
             } catch (Exception ignored) {
             }
         }

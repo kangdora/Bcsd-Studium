@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Optional<Answer> findTopByExamIdOrderByIdDesc(Long examId);
+
     void deleteAllByExamId(Long examId);
 }
