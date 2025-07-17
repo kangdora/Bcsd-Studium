@@ -10,6 +10,7 @@ import com.example.bcsd_studium.domain.repository.UserRepository;
 import com.example.bcsd_studium.dto.ExamDetailDto;
 import com.example.bcsd_studium.dto.ExamSummaryDto;
 import com.example.bcsd_studium.exception.ExamNotFoundException;
+import com.example.bcsd_studium.exception.ExamTimeException;
 import com.example.bcsd_studium.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -41,15 +42,31 @@ public class ExamService {
     }
 
     public void saveAnswers(Long examId, String answerMapJson) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(exam.getStartTime()) || now.isAfter(exam.getEndTime())) {
+            throw new ExamTimeException("시험 시간이 아닙니다.");
+        }
+
         Answer answer = getOrCreateAnswer(examId);
         answer.setAnswerMap(answerMapJson);
         answerRepository.save(answer);
     }
 
     public void submitExam(Long examId, LocalDateTime submittedAt) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
+        LocalDateTime now = submittedAt == null ? LocalDateTime.now() : submittedAt;
+        if (now.isBefore(exam.getStartTime())) {
+            throw new ExamTimeException("시험 시작 전에는 제출할 수 없습니다.");
+        }
+
         Answer answer = getOrCreateAnswer(examId);
-        answer.setSubmittedAt(submittedAt);
-        answerRepository.save(answer);
+        if (answer.getSubmittedAt() == null) {
+            answer.setSubmittedAt(now);
+            answerRepository.save(answer);
+        }
     }
 
     private Answer getOrCreateAnswer(Long examId) {
