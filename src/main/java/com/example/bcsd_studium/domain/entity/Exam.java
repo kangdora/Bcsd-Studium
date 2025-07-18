@@ -34,6 +34,7 @@ public class Exam {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @Builder.Default
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
 }
