@@ -19,6 +19,10 @@ public class Question {
     @Column(nullable = false)
     private QuestionType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private QuestionCategory category;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
