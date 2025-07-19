@@ -1,5 +1,6 @@
 package com.example.bcsd_studium.controller;
 
+import com.example.bcsd_studium.dto.QuestionInfo;
 import com.example.bcsd_studium.dto.QuestionSummaryResponse;
 import com.example.bcsd_studium.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,10 @@ public class QuestionController {
     @GetMapping("/category/{categoryType}")
     public ResponseEntity<QuestionSummaryResponse> getQuestionByCategory(@PathVariable String categoryType) {
         return ResponseEntity.ok(questionService.getQuestionByCategory(categoryType));
+    }
+
+    @GetMapping("/{questionId}")
+    public ResponseEntity<QuestionInfo> getQuestionById(@PathVariable Long questionId) {
+        return ResponseEntity.ok(questionService.getQuestionById(questionId));
     }
 }

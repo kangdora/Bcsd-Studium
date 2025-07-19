@@ -6,6 +6,7 @@ import com.example.bcsd_studium.domain.entity.QuestionCategory;
 import com.example.bcsd_studium.domain.entity.QuestionType;
 import com.example.bcsd_studium.domain.repository.ExamRepository;
 import com.example.bcsd_studium.domain.repository.QuestionRepository;
+import com.example.bcsd_studium.dto.QuestionInfo;
 import com.example.bcsd_studium.dto.QuestionSummary;
 import com.example.bcsd_studium.dto.QuestionSummaryResponse;
 import com.example.bcsd_studium.exception.ExamNotFoundException;
@@ -91,5 +92,11 @@ public class QuestionService {
                 )).toList();
 
         return new QuestionSummaryResponse(dtoList);
+    }
+
+    public QuestionInfo getQuestionById(Long questionId) {
+        return questionRepository.findById(questionId)
+                .map(QuestionInfo::from)
+                .orElseThrow(() -> new QuestionNotFoundException("질문이 존재하지 않습니다."));
     }
 }
