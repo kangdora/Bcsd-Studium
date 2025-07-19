@@ -6,6 +6,8 @@ import com.example.bcsd_studium.domain.entity.QuestionCategory;
 import com.example.bcsd_studium.domain.entity.QuestionType;
 import com.example.bcsd_studium.domain.repository.ExamRepository;
 import com.example.bcsd_studium.domain.repository.QuestionRepository;
+import com.example.bcsd_studium.dto.QuestionSummary;
+import com.example.bcsd_studium.dto.QuestionSummaryResponse;
 import com.example.bcsd_studium.exception.ExamNotFoundException;
 import com.example.bcsd_studium.exception.QuestionNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,6 +52,7 @@ public class QuestionService {
     }
 
     public void updateQuestion(Long examId, Long questionId, String type, String content, List<String> choices, Integer answer) {
+        // 수정하기
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionNotFoundException("해당 문제를 찾을 수 없습니다."));
 
@@ -75,5 +78,18 @@ public class QuestionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionNotFoundException("해당 문제를 찾을 수 없습니다."));
         questionRepository.delete(question);
+    }
+
+    public QuestionSummaryResponse getQuestionByCategory(String category) {
+        List<QuestionSummary> dtoList = questionRepository.findByCategoryOrderByIdAsc(QuestionCategory.valueOf(category.toUpperCase()))
+                .stream()
+                .map(question -> new QuestionSummary(
+                        question.getId(),
+                        question.getType().toString(),
+                        question.getCategory().toString(),
+                        question.getExam().toString()
+                )).toList();
+
+        return new QuestionSummaryResponse(dtoList);
     }
 }
