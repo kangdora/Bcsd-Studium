@@ -22,6 +22,7 @@ public class AdminQuestionController {
         Long id = questionService.createQuestion(examId,
                 request.type(),
                 request.content(),
+                request.category(),
                 request.choices(),
                 request.answer());
         return ResponseEntity.ok(QuestionCreateResponse.of(id, "문제가 추가되었습니다."));

@@ -2,6 +2,7 @@ package com.example.bcsd_studium.service;
 
 import com.example.bcsd_studium.domain.entity.Exam;
 import com.example.bcsd_studium.domain.entity.Question;
+import com.example.bcsd_studium.domain.entity.QuestionCategory;
 import com.example.bcsd_studium.domain.entity.QuestionType;
 import com.example.bcsd_studium.domain.repository.ExamRepository;
 import com.example.bcsd_studium.domain.repository.QuestionRepository;
@@ -22,11 +23,12 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Long createQuestion(Long examId, String type, String content, List<String> choices, Integer answer) {
+    public Long createQuestion(Long examId, String type, String content, String category, List<String> choices, Integer answer) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ExamNotFoundException("해당 시험을 찾을 수 없습니다."));
 
         QuestionType questionType = QuestionType.valueOf(type.toUpperCase());
+        QuestionCategory questionCategory = QuestionCategory.valueOf(category.toUpperCase());
         String choiceJson = null;
         if (choices != null) {
             try {
@@ -38,6 +40,7 @@ public class QuestionService {
         Question question = Question.builder()
                 .exam(exam)
                 .type(questionType)
+                .category(questionCategory)
                 .content(content)
                 .choices(choiceJson)
                 .answer(answer)
